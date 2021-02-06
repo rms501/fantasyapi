@@ -28,7 +28,7 @@ class YahooClient():
 	def fetchGames(cls, game_codes, seasons=None):
 		return cls._handleResponse(
 			cls._get(
-				'https://fantasysports.yahooapis.com/fantasy/v2/games;game_codes=' + cls._convertCollectionToString(game_codes) + (cls._convertSubqueryString(';seasons=', seasons) if resources else ''),
+				'https://fantasysports.yahooapis.com/fantasy/v2/games;game_codes=' + cls._convertCollectionToString(game_codes) + (cls._convertSubqueryString(';seasons=', seasons) if seasons else ''),
 				params=cls._params
 			)
 		)
@@ -165,7 +165,8 @@ class YahooClient():
 
 	@classmethod
 	def _get(cls, url, params):
-		if not cls._oauth.token_is_valid:
-			cls._oauth.refresh_access_token()
+		if not cls._oauth.token_is_valid():
+			cls._oauth = None
+			cls._oauth = OAuth2(None, None, from_file='/home/rob/apps/fantasyapi/oauth2.json')
 
 		return cls._oauth.session.get(url, params=params)
