@@ -1,5 +1,6 @@
 from fantasyapi.service.clients.yahoo_client import YahooClient
 from fantasyapi.model.yahoo.game import Game
+from fantasyapi.model.yahoo.league import League
 from pykson import Pykson
 
 class YahooExtractor():
@@ -12,7 +13,17 @@ class YahooExtractor():
 
 	def extractGames(self, game_codes, seasons=None):
 		payload = self._unwrapPayload(YahooClient.fetchGames(game_codes, seasons)).get('games')
-		return [self._pykson.from_json(payload.get(i).get('game').pop(), Game, accept_unknown=True) for i in payload.keys() if i != 'count']
+		return self._convertPayloadJsonToObjects(payload, 'game', Game)
+
+	def extractLeague(self, league_key, resoures=None):
+		return self._pykson.from_json(self._unwrapPayload(YahooClient.fetchLeague(league_key, resoures)).get('league').pop(), League, accept_unknown=True)
+
+	def extractLeagues(self, league_keys, resources=None):
+		payload = self._unwrapPayload(YahooClient.fetchLeagues(league_keys, resources)).get('leagues')
+		return self._convertPayloadJsonToObjects(payload, 'league', League)
+
+	def _convertPayloadJsonToObjects(self, payload, wrapper, objectClass):
+		return [self._pykson.from_json(payload.get(i).get(wrapper).pop(), objectClass, accept_unknown=True) for i in payload.keys() if i != 'count']		
 
 	def _unwrapPayload(self, object):
 		return object.get('fantasy_content')
