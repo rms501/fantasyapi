@@ -35,10 +35,10 @@ class YahooClient():
 
 	#valid resource values: settings, standings, scoreboard
 	@classmethod
-	def fetchLeague(cls, league_key, resources=None):
+	def fetchLeague(cls, league_key, resource=None):
 		return cls._handleResponse(
 			cls._get(
-				'https://fantasysports.yahooapis.com/fantasy/v2/league/' + str(league_key) + (cls._convertSubqueryString('/', resources) if resources else ''),
+				'https://fantasysports.yahooapis.com/fantasy/v2/league/' + str(league_key) + (('/' + resource) if resource else ''),
 				params=cls._params
 			)
 		)
