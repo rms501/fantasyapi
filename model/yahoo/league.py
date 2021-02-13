@@ -17,3 +17,4 @@ class League(JsonObject):
 	is_finished = IntegerField()
 	game_code = StringField()
 	season = StringField()
+	allow_add_to_dl_extra_pos = IntegerField()
