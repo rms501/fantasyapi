@@ -12,14 +12,23 @@ class YahooExtractor():
 		return self._pykson.from_json(self._unwrapPayload(YahooClient.fetchGame(game_key)).get('game').pop(), Game, accept_unknown=True)
 
 	def extractGames(self, game_codes, seasons=None):
-		payload = self._unwrapPayload(YahooClient.fetchGames(game_codes, seasons)).get('games')
-		return self._convertPayloadJsonToObjects(payload, 'game', Game)
+		return self._convertPayloadJsonToObjects(self._unwrapPayload(YahooClient.fetchGames(game_codes, seasons)).get('games'), 'game', Game)
 
-	def extractLeague(self, league_key, resoures=None):
-		return self._pykson.from_json(self._unwrapPayload(YahooClient.fetchLeague(league_key, resoures)).get('league').pop(), League, accept_unknown=True)
+	def extractLeague(self, league_key, resoure=None):
+		payload = self._unwrapPayload(YahooClient.fetchLeague(league_key, resoure)).get('league')
+
+		if (resource == 'settings'):
+			
+			#setting extraction logic here
+		else if (resource == 'standings'):
+			#standing extraction logic here
+		else if (resource == 'scoreboard'):
+			#scoreboard extraction logic here
+			
+		return self._pykson.from_json(self._unwrapPayload(YahooClient.fetchLeague(league_key, resoure)).get('league').pop(), League, accept_unknown=True)
 
 	def extractLeagues(self, league_keys, resources=None):
-		payload = self._unwrapPayload(YahooClient.fetchLeagues(league_keys, resources)).get('leagues')
+		payload = self._unwrapPayload(YahooClient.fetchLeagues(league_keys, resources).get('leagues'))
 		return self._convertPayloadJsonToObjects(payload, 'league', League)
 
 	def _convertPayloadJsonToObjects(self, payload, wrapper, objectClass):
